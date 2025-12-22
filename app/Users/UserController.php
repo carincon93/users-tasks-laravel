@@ -4,6 +4,7 @@ namespace App\Users;
 
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Users\UserResource;
@@ -59,7 +60,7 @@ class UserController extends Controller
      * @param User $user
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateUserRequest $request, User $user): JsonResponse
+    public function update(UpdateUserRequest $request, User $user)
     {
         return response()->json([
             'status' => 'success',
