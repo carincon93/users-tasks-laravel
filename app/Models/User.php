@@ -4,16 +4,26 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use App\Users\UserResource;
 
-#[UseResource(UserResource::class)]
+#[UserResource(UserResource::class)]
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUuids;
+
+    /** Disable timestamps */
+    public $timestamps = false;
+
+    /** Set key type to string */
+    protected $keyType = 'string';
+
+    /** Disable auto-incrementing */
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +53,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'id' => 'string',
             'password_hash' => 'hashed',
         ];
     }

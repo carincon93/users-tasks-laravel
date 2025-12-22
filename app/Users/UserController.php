@@ -2,48 +2,83 @@
 
 namespace App\Users;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Users\UserResource;
-use App\Users\UserRequest;
+use App\Users\Requests\StoreUserRequest;
+use App\Users\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
-    public function index()
+    /**
+     * @var UserService
+     */
+    public $userService;
+
+    public function __construct(UserService $userService)
     {
-        return UserResource::collection(User::all());
+        $this->userService = $userService;
     }
 
-
-    public function store(UserRequest $request)
+    /** 
+     * 
+     * Returns a list of users.
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(): JsonResponse
     {
-        $user = User::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password_hash' => $request->password_hash,
+        return response()->json([
+            'status' => 'success',
+            'data' => UserResource::collection($this->userService->index())
         ]);
-
-        return new UserResource($user);
     }
 
-
-    public function update(UserRequest $request, User $user)
+    /** 
+     * 
+     * Creates a new user.
+     * 
+     * @param StoreUserRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(StoreUserRequest $request): JsonResponse
     {
-        $user->update([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password_hash' => $request->password_hash,
+        return response()->json([
+            'status' => 'success',
+            'data' => $this->userService->store($request)
         ]);
-
-        return new UserResource($user);
     }
-    
 
-    public function destroy(User $user)
+    /** 
+     * 
+     * Updates an existing user.
+     * 
+     * @param UpdateUserRequest $request
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
-        $user->delete();
+        return response()->json([
+            'status' => 'success',
+            'data' => $this->userService->update($request, $user)
+        ]);
+    }
 
-        return response()->noContent();
+    /** 
+     * 
+     * Deletes an existing user.
+     * 
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(User $user): JsonResponse
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $this->userService->destroy($user)
+        ]);
     }
 }
