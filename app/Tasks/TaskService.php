@@ -16,9 +16,9 @@ class TaskService
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index($userId)
     {
-        return TaskResource::collection(Task::all());
+        return TaskResource::collection(Task::where('user_id', $userId)->get());
     }
 
     /**
@@ -27,9 +27,12 @@ class TaskService
      * @param StoreTaskRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTaskRequest $request)
+    public function store(StoreTaskRequest $request, $userId)
     {
-        return new TaskResource(Task::create($request->validated()));
+        return new TaskResource(Task::create([
+            'user_id' => $userId,
+            ...$request->validated()
+        ]));
     }
 
     /**
@@ -39,9 +42,12 @@ class TaskService
      * @param Task $task
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateTaskRequest $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task, $userId)
     {
-        $task->update($request->validated());
+        $task->update([
+            'user_id' => $userId,
+            ...$request->validated()
+        ]);
         return new TaskResource($task);
     }
 
@@ -51,9 +57,11 @@ class TaskService
      * @param Task $task
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Task $task)
+    public function destroy(Task $task, $userId)
     {
-        $task->delete();
+        $task->delete([
+            'user_id' => $userId,
+        ]);
 
         return response()->noContent();
     }

@@ -30,10 +30,15 @@ class TaskController extends Controller
      */
     public function index(): JsonResponse
     {
+        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
+        $guard = auth();
+
+        $authUserId = $guard->user()->id;
+
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->index()
+                'data' => $this->taskService->index($authUserId)
             ]
         );
     }
@@ -47,10 +52,15 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request): JsonResponse
     {
+        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
+        $guard = auth();
+
+        $authUserId = $guard->user()->id;
+
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->store($request)
+                'data' => $this->taskService->store($request, $authUserId)
             ]
         );
     }
@@ -65,10 +75,15 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
+        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
+        $guard = auth();
+
+        $authUserId = $guard->user()->id;
+
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->update($request, $task)
+                'data' => $this->taskService->update($request, $task, $authUserId)
             ]
         );
     }
@@ -82,10 +97,15 @@ class TaskController extends Controller
      */
     public function destroy(Task $task): JsonResponse
     {
+        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
+        $guard = auth();
+
+        $authUserId = $guard->user()->id;
+
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->destroy($task)
+                'data' => $this->taskService->destroy($task, $authUserId)
             ]
         );
     }
