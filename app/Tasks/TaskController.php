@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\Tasks\Requests\StoreTaskRequest;
 use App\Tasks\Requests\UpdateTaskRequest;
+use App\Tasks\Requests\IndexTaskRequest;
 use App\Models\Task;
 use App\Tasks\TaskService;
 
@@ -28,7 +29,7 @@ class TaskController extends Controller
      * 
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(IndexTaskRequest $request): JsonResponse
     {
         /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
         $guard = auth();
@@ -38,7 +39,7 @@ class TaskController extends Controller
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->index($authUserId)
+                'data' => $this->taskService->index($request, $authUserId)
             ]
         );
     }

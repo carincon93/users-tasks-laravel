@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Tasks\TaskResource;
 use App\Tasks\Requests\StoreTaskRequest;
 use App\Tasks\Requests\UpdateTaskRequest;
+use App\Tasks\Requests\IndexTaskRequest;
 
 class TaskService
 {
@@ -16,9 +17,23 @@ class TaskService
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($userId)
+    public function index(IndexTaskRequest $request, $userId)
     {
-        return TaskResource::collection(Task::where('user_id', $userId)->get());
+        $tasks = Task::where('user_id', $userId);
+
+        if ($request->is_completed !== null) {
+            $tasks->where('completed', $request->is_completed);
+        }
+
+        if ($request->title !== null) {
+            $tasks->where('title', 'like', '%' . $request->title . '%');
+        }
+
+        if ($request->description !== null) {
+            $tasks->where('description', 'like', '%' . $request->description . '%');
+        }
+
+        return TaskResource::collection($tasks->get());
     }
 
     /**

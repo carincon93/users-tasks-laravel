@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Tasks\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class IndexTaskRequest extends FormRequest
+{
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
+    {
+        return [
+            'title' => 'nullable|string',
+            'description' => 'nullable|string',
+            'is_completed' => 'nullable|boolean',
+        ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_completed' => $this->is_completed === NULL ? NULL : ($this->is_completed === 'true' ? true : false),
+        ]);
+    }
+}
