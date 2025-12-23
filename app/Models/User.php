@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use App\Users\UserResource;
+use App\Models\Role;
 
 #[UserResource(UserResource::class)]
 class User extends Authenticatable implements JWTSubject
@@ -69,6 +70,16 @@ class User extends Authenticatable implements JWTSubject
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    /**
+     * Get the Eloquent relationship for the user's roles.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'users_roles', 'user_id', 'role_id');
     }
 
     public function getJWTIdentifier()
