@@ -20,6 +20,7 @@ class TaskService
     public function index(IndexTaskRequest $request, $userId)
     {
         $tasks = Task::where('user_id', $userId);
+        $count = $tasks->count();
 
         if ($request->is_completed !== null) {
             $tasks->where('completed', $request->is_completed);
@@ -33,15 +34,18 @@ class TaskService
             $tasks->where('description', 'like', '%' . $request->description . '%');
         }
 
-        if ($request->limit !== null) {
+        if ($request->limit !== null && $request->limit > 0) {
             $tasks->limit($request->limit);
         }
 
-        if ($request->offset !== null) {
+        if ($request->offset !== null && $request->offset > 0) {
             $tasks->offset($request->offset);
         }
 
-        return TaskResource::collection($tasks->get());
+        return [
+            'data' => TaskResource::collection($tasks->orderBy('id', 'asc')->get()),
+            'count' => $count,
+        ];
     }
 
     /**

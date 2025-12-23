@@ -5,11 +5,12 @@ namespace App\Tasks;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 
+use App\Support\Pagination;
 use App\Tasks\Requests\StoreTaskRequest;
 use App\Tasks\Requests\UpdateTaskRequest;
 use App\Tasks\Requests\IndexTaskRequest;
-use App\Models\Task;
 use App\Tasks\TaskService;
+use App\Models\Task;
 
 class TaskController extends Controller
 {
@@ -36,10 +37,17 @@ class TaskController extends Controller
 
         $authUserId = $guard->user()->id;
 
+        $tasks = $this->taskService->index($request, $authUserId);
+        $count = $tasks['count'];
+        $apiPrefix = config('app.api_url') . ":" . config('app.api_port') . "/api" . config('app.api_prefix');
+        $pagination = Pagination::make($request->offset, $request->limit, $count);
+
         return response()->json(
             [
-                'status' => 'success',
-                'data' => $this->taskService->index($request, $authUserId)
+                'count' => $count,
+                'next' => $pagination['next'] ? $apiPrefix . "/tasks?offset=" . $pagination['next']['offset'] . "&limit=" . $request->limit : null,
+                'previous' => $pagination['previous'] ? $apiPrefix . "/tasks?offset=" . $pagination['previous']['offset'] . "&limit=" . $request->limit : null,
+                'results' => $tasks['data'],
             ]
         );
     }
@@ -61,7 +69,7 @@ class TaskController extends Controller
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->store($request, $authUserId)
+                'result' => $this->taskService->store($request, $authUserId)
             ]
         );
     }
@@ -83,7 +91,7 @@ class TaskController extends Controller
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->show($task, $authUserId)
+                'result' => $this->taskService->show($task, $authUserId)
             ]
         );
     }
@@ -105,7 +113,7 @@ class TaskController extends Controller
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->update($request, $task, $authUserId)
+                'result' => $this->taskService->update($request, $task, $authUserId)
             ]
         );
     }
@@ -127,7 +135,7 @@ class TaskController extends Controller
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $this->taskService->destroy($task, $authUserId)
+                'result' => $this->taskService->destroy($task, $authUserId)
             ]
         );
     }

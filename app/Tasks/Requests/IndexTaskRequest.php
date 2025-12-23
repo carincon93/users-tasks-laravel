@@ -26,6 +26,8 @@ class IndexTaskRequest extends FormRequest
     {
         $this->merge([
             'is_completed' => $this->is_completed === NULL ? NULL : ($this->is_completed === 'true' ? true : false),
+            'offset' => $this->offset === NULL ? 0 : $this->offset,
+            'limit' => $this->limit === NULL ? 10 : $this->limit,
         ]);
     }
 }
