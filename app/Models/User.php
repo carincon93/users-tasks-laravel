@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Users\UserResource;
 
 #[UserResource(UserResource::class)]
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasUuids;
@@ -34,6 +35,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password_hash',
+        'refresh_token',
     ];
 
     /**
@@ -43,6 +45,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password_hash',
+        'refresh_token',
     ];
 
     /**
@@ -56,5 +59,25 @@ class User extends Authenticatable
             'id' => 'string',
             'password_hash' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the Eloquent relationship for the user's tasks.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

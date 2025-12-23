@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Tasks;
+
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+
+use App\Tasks\Requests\StoreTaskRequest;
+use App\Tasks\Requests\UpdateTaskRequest;
+use App\Models\Task;
+use App\Tasks\TaskService;
+
+class TaskController extends Controller
+{
+    /**
+     * @var TaskService
+     */
+    public $taskService;
+
+    public function __construct(TaskService $taskService)
+    {
+        $this->taskService = $taskService;
+    }
+
+    /** 
+     * 
+     * Returns a list of tasks.
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(): JsonResponse
+    {
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => $this->taskService->index()
+            ]
+        );
+    }
+
+    /** 
+     * 
+     * Creates a new task.
+     * 
+     * @param StoreTaskRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(StoreTaskRequest $request): JsonResponse
+    {
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => $this->taskService->store($request)
+            ]
+        );
+    }
+
+    /** 
+     * 
+     * Updates an existing task.
+     * 
+     * @param UpdateTaskRequest $request
+     * @param Task $task
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(UpdateTaskRequest $request, Task $task): JsonResponse
+    {
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => $this->taskService->update($request, $task)
+            ]
+        );
+    }
+
+    /** 
+     * 
+     * Deletes an existing task.
+     *
+     * @param Task $task
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Task $task): JsonResponse
+    {
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => $this->taskService->destroy($task)
+            ]
+        );
+    }
+}
