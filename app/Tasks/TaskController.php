@@ -100,7 +100,6 @@ class TaskController extends Controller
     {
         /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
         $guard = auth();
-
         $authUserId = $guard->user()->id;
 
         return response()->json(

@@ -17,6 +17,8 @@ class IndexTaskRequest extends FormRequest
             'title' => 'nullable|string',
             'description' => 'nullable|string',
             'is_completed' => 'nullable|boolean',
+            'offset' => 'nullable|integer',
+            'limit' => 'nullable|integer',
         ];
     }
 

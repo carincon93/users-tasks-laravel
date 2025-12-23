@@ -33,6 +33,14 @@ class TaskService
             $tasks->where('description', 'like', '%' . $request->description . '%');
         }
 
+        if ($request->limit !== null) {
+            $tasks->limit($request->limit);
+        }
+
+        if ($request->offset !== null) {
+            $tasks->offset($request->offset);
+        }
+
         return TaskResource::collection($tasks->get());
     }
 
