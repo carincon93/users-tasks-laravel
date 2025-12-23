@@ -18,13 +18,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | API Prefix
+    | API Configuration
     |--------------------------------------------------------------------------
     |
-    | This value is the prefix of your API routes.
+    | These values are used to generate the API URLs.
     |
     */
     'api_prefix' => env('API_PREFIX', 'api'),
+    'api_url' => env('API_URL', 'http://localhost'),
+    'api_port' => env('API_PORT', '8000'),
 
 
     /*
