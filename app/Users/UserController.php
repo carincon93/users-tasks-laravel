@@ -53,6 +53,21 @@ class UserController extends Controller
 
     /** 
      * 
+     * Returns a specific user.
+     * 
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(User $user): JsonResponse
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $this->userService->show($user)
+        ]);
+    }
+
+    /** 
+     * 
      * Updates an existing user.
      * 
      * @param UpdateUserRequest $request

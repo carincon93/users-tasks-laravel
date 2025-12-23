@@ -36,6 +36,17 @@ class TaskService
     }
 
     /**
+     * Returns a specific task.
+     *
+     * @param Task $task
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Task $task, $userId)
+    {
+        return new TaskResource(Task::where('user_id', $userId)->findOrFail($task->id));
+    }
+
+    /**
      * Updates an existing task.
      *
      * @param UpdateTaskRequest $request

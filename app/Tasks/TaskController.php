@@ -67,6 +67,28 @@ class TaskController extends Controller
 
     /** 
      * 
+     * Returns a specific task.
+     * 
+     * @param Task $task
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Task $task): JsonResponse
+    {
+        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
+        $guard = auth();
+
+        $authUserId = $guard->user()->id;
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => $this->taskService->show($task, $authUserId)
+            ]
+        );
+    }
+
+    /** 
+     * 
      * Updates an existing task.
      * 
      * @param UpdateTaskRequest $request

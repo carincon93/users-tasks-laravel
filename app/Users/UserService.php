@@ -39,6 +39,17 @@ class UserService
     }
 
     /**
+     * Returns a specific user.
+     *
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(User $user)
+    {
+        return new UserResource($user);
+    }
+
+    /**
      * Updates an existing user.
      *
      * @param UpdateUserRequest $request
