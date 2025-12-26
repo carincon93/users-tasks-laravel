@@ -8,6 +8,7 @@ use PHPOpenSourceSaver\JWTAuth\JWTAuth;
 
 use App\Http\Controllers\Controller;
 use App\Auth\Requests\LoginRequest;
+use App\Auth\Requests\RegisterRequest;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -28,6 +29,32 @@ class AuthController extends Controller
         if (! $user || ! Hash::check($credentials['password'], $user->password_hash)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
+        $guard = auth('api');
+        $accessToken = $guard->fromUser($user);
+
+        return response()->json([
+            'access_token' => $accessToken,
+            'token_type'   => 'Bearer',
+            'expires_in'   => $guard->factory()->getTTL() * 60,
+        ]);
+    }
+
+    /**
+     * Register user and return JWT token
+     * 
+     * @param RegisterRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @unauthenticated
+     */
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $user = User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password_hash' => Hash::make($request->password),
+        ]);
 
         /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
         $guard = auth('api');
