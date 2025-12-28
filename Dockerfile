@@ -21,7 +21,7 @@ RUN docker-php-ext-install \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www
+WORKDIR /var/www/html
 
 # Copy composer files first (better cache)
 COPY composer.json composer.lock ./
@@ -36,7 +36,7 @@ RUN composer install \
 COPY . .
 
 # Permissions
-RUN chown -R www-data:www-data /var/www
+RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 8080
 
